@@ -1,0 +1,6 @@
+@CoffeeClub.Core_HostAddress = http://localhost:5227
+
+GET {{CoffeeClub.Core_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
