@@ -7,7 +7,7 @@ var coreApi = builder.AddProject<Projects.CoffeeClub_Core>("coresapi")
 
 var bffApi = builder.AddProject<Projects.CoffeeClub_BFF>("bffapi")
     .WithHttpHealthCheck("/health")
-    .WithExternalHttpEndpoints()
+    .WithHttpEndpoint(3010, 8080, "bffapi")
     .WithReference(coreApi)
     .WaitFor(coreApi);
 
@@ -18,5 +18,5 @@ builder.AddProject<Projects.CoffeeClub_UI>("ui")
     .WaitFor(bffApi);
 
 
-
 builder.Build().Run();
+
