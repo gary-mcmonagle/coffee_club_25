@@ -1,11 +1,12 @@
 
+using CoffeeClub.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoffeeClub.ApiService.Infrastructure;
 
 public class CoffeeService(CoffeeClubDbContext dbContext) : ICoffeeService
 {
-    public Task AddCoffeeAsync(Coffee coffee)
+    public Task AddCoffeeAsync(CoffeeClubCoffeeModel coffee)
     {
         dbContext.Coffees.Add(coffee);
         return dbContext.SaveChangesAsync();
@@ -22,17 +23,17 @@ public class CoffeeService(CoffeeClubDbContext dbContext) : ICoffeeService
         return Task.CompletedTask;
     }
 
-    public  async Task<Coffee?> GetCoffeeByIdAsync(string id)
+    public  async Task<CoffeeClubCoffeeModel?> GetCoffeeByIdAsync(string id)
     {
         return await dbContext.Coffees.FindAsync(id);
     }
 
-    public async Task<IEnumerable<Coffee>> GetCoffeesAsync()
+    public async Task<IEnumerable<CoffeeClubCoffeeModel>> GetCoffeesAsync()
     {
         return await dbContext.Coffees.ToListAsync();
     }
 
-    public async Task UpdateCoffeeAsync(Coffee coffee)
+    public async Task UpdateCoffeeAsync(CoffeeClubCoffeeModel coffee)
     {
         dbContext.Coffees.Update(coffee);
         await dbContext.SaveChangesAsync();

@@ -1,3 +1,4 @@
+using CoffeeClub.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoffeeClub.ApiService.Infrastructure;
@@ -9,22 +10,14 @@ public class CoffeeClubDbContext : DbContext
     {
     }
 
-    public DbSet<Coffee> Coffees => Set<Coffee>();
+    public DbSet<CoffeeClubCoffeeModel> Coffees => Set<CoffeeClubCoffeeModel>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Coffee>().ToContainer("coffees");
-        modelBuilder.Entity<Coffee>().HasPartitionKey(c => c.Id);
+        modelBuilder.Entity<CoffeeClubCoffeeModel>().ToContainer("coffees");
+        modelBuilder.Entity<CoffeeClubCoffeeModel>().HasPartitionKey(c => c.Id);
         base.OnModelCreating(modelBuilder);
     }
 }
 
 
-public class Coffee
-{
-    public string Id { get; set; } = null!;
-    public string Name { get; set; } = null!;
-    public string Origin { get; set; } = null!;
-    public string Roast { get; set; } = null!;
-    public DateTime CreatedAt { get; set; }
-}

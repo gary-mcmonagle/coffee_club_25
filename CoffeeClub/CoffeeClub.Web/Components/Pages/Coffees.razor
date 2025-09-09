@@ -4,6 +4,7 @@
 <h3>Coffee List</h3>
 
 @if (coffees == null)
+@using CoffeeClub.Domain
 @using Microsoft.AspNetCore.Components.Forms
 {
     <p>Loading...</p>
@@ -51,9 +52,9 @@ else
 </EditForm>
 
 @code {
-    private List<Coffee> coffees = new List<Coffee>();
-    private Coffee newCoffee = new Coffee();
-    private Coffee editingCoffee;
+    private List<CoffeeClubCoffeeModel> coffees = new List<CoffeeClubCoffeeModel>();
+    private CoffeeClubCoffeeModel newCoffee = new CoffeeClubCoffeeModel();
+    private CoffeeClubCoffeeModel editingCoffee;
 
     protected override async Task OnInitializedAsync()
     {
@@ -68,7 +69,7 @@ else
     private async Task AddCoffee()
     {
         await CoffeeApiClient.AddCoffeeAsync(newCoffee);
-        newCoffee = new Coffee();
+        newCoffee = new CoffeeClubCoffeeModel();
         await LoadCoffees();
     }
 
@@ -78,9 +79,9 @@ else
         await LoadCoffees();
     }
 
-    private void EditCoffee(Coffee coffee)
+    private void EditCoffee(CoffeeClubCoffeeModel coffee)
     {
-        editingCoffee = new Coffee
+        editingCoffee = new CoffeeClubCoffeeModel
         {
             Id = coffee.Id,
             Name = coffee.Name,

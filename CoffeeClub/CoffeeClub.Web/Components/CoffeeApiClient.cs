@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using CoffeeClub.Domain;
 
 namespace CoffeeClub.Web.Components;
 
@@ -11,27 +12,27 @@ public class CoffeeApiClient
         _httpClient = httpClient;
     }
 
-    public async Task<List<Coffee>> GetCoffeesAsync()
+    public async Task<List<CoffeeClubCoffeeModel>> GetCoffeesAsync()
     {
-        return await _httpClient.GetFromJsonAsync<List<Coffee>>("/coffees") ?? new();
+        return await _httpClient.GetFromJsonAsync<List<CoffeeClubCoffeeModel>>("/coffees") ?? new();
     }
 
-    public async Task<Coffee?> GetCoffeeByIdAsync(string id)
+    public async Task<CoffeeClubCoffeeModel?> GetCoffeeByIdAsync(string id)
     {
-        return await _httpClient.GetFromJsonAsync<Coffee>($"/coffees/{id}");
+        return await _httpClient.GetFromJsonAsync<CoffeeClubCoffeeModel>($"/coffees/{id}");
     }
 
-    public async Task<Coffee?> AddCoffeeAsync(Coffee coffee)
+    public async Task<CoffeeClubCoffeeModel?> AddCoffeeAsync(CoffeeClubCoffeeModel coffee)
     {
         var response = await _httpClient.PostAsJsonAsync("/coffees", coffee);
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<Coffee>();
+            return await response.Content.ReadFromJsonAsync<CoffeeClubCoffeeModel>();
         }
         return null;
     }
 
-    public async Task<bool> UpdateCoffeeAsync(string id, Coffee coffee)
+    public async Task<bool> UpdateCoffeeAsync(string id, CoffeeClubCoffeeModel coffee)
     {
         var response = await _httpClient.PutAsJsonAsync($"/coffees/{id}", coffee);
         return response.IsSuccessStatusCode;

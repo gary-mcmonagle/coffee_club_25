@@ -1,4 +1,5 @@
 using CoffeeClub.ApiService.Infrastructure;
+using CoffeeClub.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +35,7 @@ string[] summaries = ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "
 
 app.MapGet("/weatherforecast", async (ICoffeeService service) =>
 {
-    await service.AddCoffeeAsync(new Coffee
+    await service.AddCoffeeAsync(new CoffeeClubCoffeeModel
     {
         Id = Guid.NewGuid().ToString(),
         Name = "Ethiopian Yirgacheffe",
@@ -59,17 +60,17 @@ app.MapGet("/coffees", async (ICoffeeService service) =>
     Results.Ok(await service.GetCoffeesAsync()));
 
 app.MapGet("/coffees/{id}", async (string id, ICoffeeService service) =>
-    await service.GetCoffeeByIdAsync(id) is Coffee coffee
+    await service.GetCoffeeByIdAsync(id) is CoffeeClubCoffeeModel coffee
         ? Results.Ok(coffee)
         : Results.NotFound());
 
-app.MapPost("/coffees", async (Coffee coffee, ICoffeeService service) =>
+app.MapPost("/coffees", async (CoffeeClubCoffeeModel coffee, ICoffeeService service) =>
 {
     await service.AddCoffeeAsync(coffee);
     return Results.Created($"/coffees/{coffee.Id}", coffee);
 });
 
-app.MapPut("/coffees/{id}", async (string id, Coffee coffee, ICoffeeService service) =>
+app.MapPut("/coffees/{id}", async (string id, CoffeeClubCoffeeModel coffee, ICoffeeService service) =>
 {
     if (id != coffee.Id) return Results.BadRequest();
     await service.UpdateCoffeeAsync(coffee);

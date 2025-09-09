@@ -1,6 +1,6 @@
-namespace CoffeeClub.Web.Components;
+namespace CoffeeClub.Domain;
 
-public class Coffee
+public record CoffeeClubCoffeeModel
 {
     public string Id { get; set; } = null!;
     public string Name { get; set; } = null!;

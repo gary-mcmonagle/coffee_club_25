@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\CoffeeClub.ServiceDefaults\CoffeeClub.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\CoffeeClub.Domain\CoffeeClub.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.Cosmos" Version="9.4.2" />

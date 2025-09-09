@@ -6,5 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\CoffeeClub.ServiceDefaults\CoffeeClub.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\CoffeeClub.Domain\CoffeeClub.Domain.csproj" />
   </ItemGroup>
 </Project>

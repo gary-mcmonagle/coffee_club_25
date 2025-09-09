@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CoffeeClub.ApiService\CoffeeClub.ApiService.csproj" />
     <ProjectReference Include="..\CoffeeClub.Web\CoffeeClub.Web.csproj" />
+    <ProjectReference Include="..\CoffeeClub.MCPApi\CoffeeClub.MCPApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

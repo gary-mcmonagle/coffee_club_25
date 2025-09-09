@@ -23,6 +23,13 @@ var apiService = builder.AddProject<Projects.CoffeeClub_ApiService>("apiservice"
     .WaitFor(coffees)
     .WithExternalHttpEndpoints();
 
+
+var mcpApiService = builder.AddProject<Projects.CoffeeClub_MCPApi>("mcpapiservice")
+    .WithHttpHealthCheck("/health")
+    .WithReference(apiService)
+    .WaitFor(apiService)
+    .WithExternalHttpEndpoints();
+
     
 
 builder.AddProject<Projects.CoffeeClub_Web>("webfrontend")

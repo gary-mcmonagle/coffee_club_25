@@ -1,4 +1,5 @@
 ﻿@page "/weather"
+@using CoffeeClub.Domain
 @attribute [StreamRendering(true)]
 @attribute [OutputCache(Duration = 5)]
 
@@ -74,7 +75,7 @@ else
 @code {
     private WeatherForecast[]? forecasts;
 
-    private Coffee[]? coffees;
+    private CoffeeClubCoffeeModel[]? coffees;
 
     protected override async Task OnInitializedAsync()
     {

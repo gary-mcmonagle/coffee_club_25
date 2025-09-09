@@ -1,10 +1,12 @@
+using CoffeeClub.Domain;
+
 namespace CoffeeClub.ApiService.Infrastructure;
 
 public interface ICoffeeService
 {
-    Task<IEnumerable<Coffee>> GetCoffeesAsync();
-    Task<Coffee?> GetCoffeeByIdAsync(string id);
-    Task AddCoffeeAsync(Coffee coffee);
-    Task UpdateCoffeeAsync(Coffee coffee);
+    Task<IEnumerable<CoffeeClubCoffeeModel>> GetCoffeesAsync();
+    Task<CoffeeClubCoffeeModel?> GetCoffeeByIdAsync(string id);
+    Task AddCoffeeAsync(CoffeeClubCoffeeModel coffee);
+    Task UpdateCoffeeAsync(CoffeeClubCoffeeModel coffee);
     Task DeleteCoffeeAsync(string id);
 }
