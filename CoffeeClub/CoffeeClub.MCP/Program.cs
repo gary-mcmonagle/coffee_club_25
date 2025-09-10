@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.AddServiceDefaults();
+builder.Services.AddMcpServer()
+    .WithHttpTransport()
+    .WithToolsFromAssembly();
 builder.Services.AddHttpClient<ICoffeeService, CoffeeService>(client =>
 {
     // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
@@ -49,7 +52,7 @@ app.MapGet("/weatherforecast", () =>
 app.MapDefaultEndpoints();
 
 
-
+app.MapMcp();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
