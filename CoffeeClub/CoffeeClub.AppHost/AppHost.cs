@@ -19,6 +19,13 @@ var coreApi = builder.AddProject<Projects.CoffeeClub_Core>("coreapi")
     .WithReference(coffees);
 
 
+var mcpApi = builder.AddProject<Projects.CoffeeClub_MCP>("mcpapi")
+    .WithHttpHealthCheck("/health")
+    // .WithHttpEndpoint(3010, 8080, "bffapi")
+    .WithReference(coreApi)
+    .WaitFor(coreApi);
+
+
 var bffApi = builder.AddProject<Projects.CoffeeClub_BFF>("bffapi")
     .WithHttpHealthCheck("/health")
     // .WithHttpEndpoint(3010, 8080, "bffapi")

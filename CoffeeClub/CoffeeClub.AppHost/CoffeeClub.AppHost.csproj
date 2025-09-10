@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../CoffeeClub.MCP/CoffeeClub.MCP.csproj" />
     <ProjectReference Include="..\CoffeeClub.BFF\CoffeeClub.BFF.csproj" />
     <ProjectReference Include="..\CoffeeClub.Core\CoffeeClub.Core.csproj" />
     <ProjectReference Include="..\CoffeeClub.UI\CoffeeClub.UI.csproj" />
