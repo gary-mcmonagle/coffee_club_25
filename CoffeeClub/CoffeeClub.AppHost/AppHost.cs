@@ -3,6 +3,14 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 
+var serviceBus = builder.AddAzureServiceBus("messaging").RunAsEmulator(
+                         emulator =>
+                         {
+                             emulator.WithHostPort(7777);
+                         });
+
+var queue = serviceBus.AddServiceBusQueue("coffee-queue");
+
 var cosmos = builder.AddAzureCosmosDB("cosmos-db").RunAsPreviewEmulator(
                      emulator =>
                      {
@@ -16,7 +24,9 @@ var coffees = customers.AddContainer("coffees", "/id");
 var coreApi = builder.AddProject<Projects.CoffeeClub_Core>("coreapi")
     .WithHttpHealthCheck("/health")
     .WaitFor(coffees)
-    .WithReference(coffees);
+    .WithReference(coffees)
+    .WaitFor(serviceBus)
+    .WithReference(serviceBus);
 
 
 var mcpApi = builder.AddProject<Projects.CoffeeClub_MCP>("mcpapi")

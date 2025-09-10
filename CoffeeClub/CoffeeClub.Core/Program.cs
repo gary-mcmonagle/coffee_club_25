@@ -4,6 +4,8 @@ using CoffeeClub.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddAzureServiceBusClient(connectionName: "messaging");
+
 // Add services to the container.
 
 // Add service defaults & Aspire client integrations.

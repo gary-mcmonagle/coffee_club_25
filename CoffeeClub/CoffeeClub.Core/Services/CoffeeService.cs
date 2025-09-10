@@ -3,18 +3,12 @@ using CoffeeClub.Domain.Dtos;
 using CoffeeClub.Domain.Services;
 using CoffeeClub.Domain.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Azure.Messaging.ServiceBus;
 
 namespace CoffeeClub.Core.Services;
 
-public class CoffeeService(CoffeeContext context) : ICoffeeService
+public class CoffeeService(CoffeeContext context, ServiceBusClient serviceBusClient) : ICoffeeService
 {
-    // private readonly List<CoffeeDto> _coffees = new()
-    // {
-    //     new CoffeeDto { Id = Guid.NewGuid(), Name = "Espresso", Roast = "Dark" },
-    //     new CoffeeDto { Id = Guid.NewGuid(), Name = "Latte", Roast = "Medium" },
-    //     new CoffeeDto { Id = Guid.NewGuid(), Name = "Cappuccino", Roast = "Light" }
-    // };
-
     public async Task<List<CoffeeDto>> GetCoffeesAsync()
     {
         return (await context.Coffees.ToListAsync())
@@ -33,6 +27,12 @@ public class CoffeeService(CoffeeContext context) : ICoffeeService
         var entity = createCoffeeDto.ToEntity();
         context.Coffees.Add(entity);
         await context.SaveChangesAsync();
+
+        // Send a message to the Service Bus queue
+        var sender = serviceBusClient.CreateSender("coffee-queue");
+        var message = new ServiceBusMessage($"New coffee added: {entity.Name} (ID: {entity.Id})");
+        await sender.SendMessageAsync(message);
+        
         return entity.ToDto();
     }
 
