@@ -1,63 +1,19 @@
 @using CoffeeClub.Domain.Dtos
+@using CoffeeClub.UI.Components.Coffee
 @using Microsoft.AspNetCore.Components.Web
 @page "/coffee"
-
+@rendermode InteractiveServer
 <PageTitle>Coffee</PageTitle>
 
 
 <h2>Add Coffee</h2>
 
 
-
-<EditForm Model="newCoffee" OnValidSubmit="HandleAddCoffee" FormName="AddCoffeeForm">
-	<DataAnnotationsValidator />
-	<ValidationSummary />
-	<div class="mb-2">
-		<label>Name:</label>
-		<InputText @bind-Value="newCoffee.Name" class="form-control" />
-	</div>
-	<div class="mb-2">
-		<label>Roast:</label>
-		<InputText @bind-Value="newCoffee.Roast" class="form-control" />
-	</div>
-	<button type="submit" class="btn btn-primary">Add Coffee</button>
-</EditForm>
+<AddCoffeeComponent OnCoffeeAdded="RefreshCoffeesAsync"  @rendermode="InteractiveServer"/>
 
 <h1>Coffee List</h1>
 
-<table class="table">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Roast</th>
-			<th>Id</th>
-			<th>Actions</th>
-		</tr>
-	</thead>
-	<tbody>
-		@if (Coffees != null && Coffees.Count > 0)
-		{
-			foreach (var coffee in Coffees)
-			{
-				<tr>
-					<td>@coffee.Name</td>
-					<td>@coffee.Roast</td>
-					<td>@coffee.Id</td>
-					<td>
-						<button class="btn btn-danger btn-sm" @onclick="() => DeleteCoffeeAsync(coffee.Id)">Delete</button>
-					</td>
-				</tr>
-			}
-		}
-		else
-		{
-			<tr>
-				<td colspan="4">No coffees found.</td>
-			</tr>
-		}
-	</tbody>
-</table>
-
+<CoffeeTable Coffees="@Coffees" OnDeleteCoffeeW="@(async (id) => await HandleCoffeeDeleted(id))"  @rendermode="InteractiveServer"/>
 
 
 

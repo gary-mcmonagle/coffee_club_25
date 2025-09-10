@@ -1,3 +1,4 @@
+using CoffeeClub.Core.Infrastructure;
 using CoffeeClub.Core.Services;
 using CoffeeClub.Domain.Services;
 
@@ -10,6 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<ICoffeeService, CoffeeService>();
 builder.AddServiceDefaults();
 
+builder.AddCosmosDbContext<CoffeeContext>("cosmosdb", "coffeeclubdb", options =>
+{
+
+    
+});
 // Add services to the container.
 builder.Services.AddProblemDetails();
 

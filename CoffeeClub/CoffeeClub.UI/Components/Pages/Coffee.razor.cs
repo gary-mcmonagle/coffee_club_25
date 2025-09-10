@@ -14,13 +14,10 @@ public partial class Coffee : ComponentBase
     [Inject]
     private ICoffeeService CoffeeService { get; set; } = default!;
 
-    protected CreateCoffeeDto newCoffee ; 
-
     protected List<CoffeeDto> Coffees = new();
 
     protected override async Task OnInitializedAsync()
     {
-                newCoffee = new CreateCoffeeDto();
 
         Coffees = await CoffeeService.GetCoffeesAsync();
     }
@@ -31,24 +28,10 @@ public partial class Coffee : ComponentBase
         StateHasChanged();
     }
 
-    private async Task AddCoffeeAsync(CreateCoffeeDto createCoffeeDto)
-    {
-        if (createCoffeeDto == null || string.IsNullOrWhiteSpace(createCoffeeDto.Name) || string.IsNullOrWhiteSpace(createCoffeeDto.Roast))
-            return;
-
-        await CoffeeService.AddCoffeeAsync(createCoffeeDto);
-        await RefreshCoffeesAsync();
-    }
-    protected async Task DeleteCoffeeAsync(Guid id)
+    protected async Task HandleCoffeeDeleted(Guid id)
     {
         await CoffeeService.DeleteCoffeeAsync(id);
         await RefreshCoffeesAsync();
-    }
-        protected async Task HandleAddCoffee()
-    {
-        await AddCoffeeAsync(newCoffee);
-        await RefreshCoffeesAsync();
-        newCoffee = new();
     }
 
 }

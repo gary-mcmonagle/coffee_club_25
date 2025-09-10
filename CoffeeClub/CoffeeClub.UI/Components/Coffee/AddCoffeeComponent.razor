@@ -1,0 +1,39 @@
+﻿@using CoffeeClub.Domain.Dtos
+@using CoffeeClub.Domain.Services
+
+
+
+<EditForm Model="@NewCoffee" OnValidSubmit="HandleAddCoffee" FormName="Add Coffee Form">
+    @* <DataAnnotationsValidator />
+    <ValidationSummary /> *@
+    <div class="mb-2">
+        <label>Name:</label>
+        <InputText @bind-Value="@NewCoffee.Name" class="form-control" />
+    </div>
+    <div class="mb-2">
+        <label>Roast:</label>
+        <InputText @bind-Value="@NewCoffee.Roast" class="form-control" />
+    </div>
+	<input type="submit" value="Submit" class="btn btn-primary"/>
+</EditForm>
+@code {
+
+    [Inject]
+    private ICoffeeService CoffeeService { get; set; } = default!;
+    [Parameter]
+    public EventCallback OnCoffeeAdded { get; set; }
+
+    private CreateCoffeeDto NewCoffee = new CreateCoffeeDto();
+
+    private async Task HandleAddCoffee()
+    {
+        if (string.IsNullOrWhiteSpace(NewCoffee.Name) || string.IsNullOrWhiteSpace(NewCoffee.Roast)){
+            return;
+        }
+        await CoffeeService.AddCoffeeAsync(NewCoffee);
+        NewCoffee = new CreateCoffeeDto();
+        await OnCoffeeAdded.InvokeAsync();
+    }
+
+
+}

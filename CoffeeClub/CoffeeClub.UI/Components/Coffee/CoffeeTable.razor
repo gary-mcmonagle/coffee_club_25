@@ -1,0 +1,53 @@
+﻿@using CoffeeClub.Domain.Dtos
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Roast</th>
+            <th>Id</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Coffees != null && Coffees.Count > 0)
+        {
+            foreach (var coffee in Coffees)
+            {
+                <tr>
+                    <td>@coffee.Name</td>
+                    <td>@coffee.Roast</td>
+                    <td>@coffee.Id</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => HandleDeleteCoffee(coffee.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No coffees found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    [Parameter, EditorRequired]
+    public List<CoffeeDto> Coffees { get; set; } = new List<CoffeeDto>();
+
+
+    [Parameter]
+    public EventCallback<Guid> OnDeleteCoffeeW { get; set; }
+
+
+    private async Task HandleDeleteCoffee(Guid coffeeId)
+    {
+        await OnDeleteCoffeeW.InvokeAsync(coffeeId);
+    }
+
+
+}
