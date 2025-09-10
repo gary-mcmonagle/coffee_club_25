@@ -1,13 +1,26 @@
+
+using CoffeeClub.Domain.Services;
 using CoffeeClub.UI.Components;
+using CoffeeClub.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
 
+builder.Services.AddHttpClient<ICoffeeService, CoffeeService>(client =>
+{
+    // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
+    // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
+    client.BaseAddress = new("https+http://bffapi");
+    //client.BaseAddress = new("yuck");
+});
+
+// builder.Services.AddTransient<ICoffeeService, CoffeeService>();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 var app = builder.Build();
 
@@ -27,5 +40,9 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+
+    app.MapDefaultEndpoints();
+
 
 app.Run();

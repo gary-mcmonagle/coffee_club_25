@@ -7,9 +7,9 @@ public class CoffeeService : ICoffeeService
 {
     private readonly List<CoffeeDto> _coffees = new()
     {
-        new CoffeeDto { Id = Guid.NewGuid(), Name = "Espresso" },
-        new CoffeeDto { Id = Guid.NewGuid(), Name = "Latte" },
-        new CoffeeDto { Id = Guid.NewGuid(), Name = "Cappuccino" }
+        new CoffeeDto { Id = Guid.NewGuid(), Name = "Espresso", Roast = "Dark" },
+        new CoffeeDto { Id = Guid.NewGuid(), Name = "Latte", Roast = "Medium" },
+        new CoffeeDto { Id = Guid.NewGuid(), Name = "Cappuccino", Roast = "Light" }
     };
 
     public Task<List<CoffeeDto>> GetCoffeesAsync()

@@ -1,13 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <ItemGroup>
     <ProjectReference Include="..\CoffeeClub.ServiceDefaults\CoffeeClub.ServiceDefaults.csproj" />
   </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+    <ItemGroup>
+    <ProjectReference Include="..\CoffeeClub.Domain\CoffeeClub.Domain.csproj" />
+    <ProjectReference Include="..\CoffeeClub.ServiceDefaults\CoffeeClub.ServiceDefaults.csproj" />
+  </ItemGroup>
 </Project>

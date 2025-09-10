@@ -1,13 +1,13 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 
-var coreApi = builder.AddProject<Projects.CoffeeClub_Core>("coresapi")
+var coreApi = builder.AddProject<Projects.CoffeeClub_Core>("coreapi")
     .WithHttpHealthCheck("/health");
 
 
 var bffApi = builder.AddProject<Projects.CoffeeClub_BFF>("bffapi")
     .WithHttpHealthCheck("/health")
-    .WithHttpEndpoint(3010, 8080, "bffapi")
+    // .WithHttpEndpoint(3010, 8080, "bffapi")
     .WithReference(coreApi)
     .WaitFor(coreApi);
 

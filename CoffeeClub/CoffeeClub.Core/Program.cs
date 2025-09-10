@@ -1,8 +1,13 @@
+using CoffeeClub.Core.Services;
+using CoffeeClub.Domain.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 // Add service defaults & Aspire client integrations.
+
+builder.Services.AddScoped<ICoffeeService, CoffeeService>();
 builder.AddServiceDefaults();
 
 // Add services to the container.
