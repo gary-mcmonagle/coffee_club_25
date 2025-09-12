@@ -1,22 +1,49 @@
+
 #pragma warning disable ASPIRECOSMOSDB001
+using Azure.Provisioning.CosmosDB;
+using Microsoft.Extensions.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
 
-var serviceBus = builder.AddAzureServiceBus("messaging").RunAsEmulator(
-                         emulator =>
-                         {
-                             emulator.WithHostPort(7777);
-                         });
+
+var isDev = !builder.ExecutionContext.IsPublishMode;
+var insights = builder.AddAzureApplicationInsights("MyApplicationInsights");
+
+var serviceBus = builder.AddAzureServiceBus("messaging");
+if (isDev)
+{
+    serviceBus = serviceBus.RunAsEmulator(
+        emulator =>
+        {
+            emulator.WithHostPort(7777);
+        });
+}
 
 var queue = serviceBus.AddServiceBusQueue("coffee-queue");
 
-var cosmos = builder.AddAzureCosmosDB("cosmos-db").RunAsPreviewEmulator(
-                     emulator =>
-                     {
-                         emulator.WithDataVolume();
-                         emulator.WithDataExplorer();
-                     }).WithEndpoint(8081, 8081); // Set a fixed port
+var cosmos = builder.AddAzureCosmosDB("cosmosdb");
+if (isDev)
+{
+    cosmos = cosmos.RunAsPreviewEmulator(
+        emulator =>
+        {
+            emulator.WithDataVolume();
+            emulator.WithDataExplorer();
+        }).WithEndpoint(8081, 8081); // Set a fixed port
+}
+else
+{
+    cosmos = cosmos.ConfigureInfrastructure(
+        infra =>
+        {
+            var cosmosDbAccount = infra.GetProvisionableResources()
+                                   .OfType<CosmosDBAccount>()
+                                   .Single();
+
+            cosmosDbAccount.Kind = CosmosDBAccountKind.GlobalDocumentDB;
+        });
+}
 
 var customers = cosmos.AddCosmosDatabase("coffeeclubdb");
 var coffees = customers.AddContainer("coffees", "/id");
@@ -28,25 +55,41 @@ var coreApi = builder.AddProject<Projects.CoffeeClub_Core>("coreapi")
     .WaitFor(serviceBus)
     .WithReference(serviceBus);
 
+if (!isDev && insights != null)
+{
+    coreApi = coreApi.WaitFor(insights).WithReference(insights);
+}
 
 var mcpApi = builder.AddProject<Projects.CoffeeClub_MCP>("mcpapi")
     .WithHttpHealthCheck("/health")
-    // .WithHttpEndpoint(3010, 8080, "bffapi")
     .WithReference(coreApi)
-    .WaitFor(coreApi);
+    .WaitFor(coreApi)
+    .WithExternalHttpEndpoints();
+if (!isDev && insights != null)
+{
+    mcpApi = mcpApi.WithReference(insights);
+}
 
 
 var bffApi = builder.AddProject<Projects.CoffeeClub_BFF>("bffapi")
     .WithHttpHealthCheck("/health")
-    // .WithHttpEndpoint(3010, 8080, "bffapi")
     .WithReference(coreApi)
     .WaitFor(coreApi);
+if (!isDev && insights != null)
+{
+    bffApi = bffApi.WithReference(insights);
+}
 
 
-builder.AddProject<Projects.CoffeeClub_UI>("ui")
+var uiApi = builder.AddProject<Projects.CoffeeClub_UI>("ui")
+    .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
     .WithReference(bffApi)
     .WaitFor(bffApi);
+if (!isDev && insights != null)
+{
+    uiApi = uiApi.WithReference(insights);
+}
 
 
 builder.Build().Run();
