@@ -1,0 +1,8 @@
+{
+    "azureFunctions.deploySubpath": "CoffeeClub/CoffeeClub.Functions/bin/Release/net9.0/publish",
+    "azureFunctions.projectLanguage": "C#",
+    "azureFunctions.projectRuntime": "~4",
+    "debug.internalConsoleOptions": "neverOpen",
+    "azureFunctions.projectSubpath": "CoffeeClub/CoffeeClub.Functions",
+    "azureFunctions.preDeployTask": "publish (functions)"
+}

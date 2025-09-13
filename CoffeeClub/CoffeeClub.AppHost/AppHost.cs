@@ -2,6 +2,7 @@
 #pragma warning disable ASPIRECOSMOSDB001
 using Azure.Provisioning.CosmosDB;
 using Microsoft.Extensions.Hosting;
+using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -47,6 +48,15 @@ else
 
 var customers = cosmos.AddCosmosDatabase("coffeeclubdb");
 var coffees = customers.AddContainer("coffees", "/id");
+
+var storage = builder.AddAzureStorage("storage")
+                     .RunAsEmulator();
+
+var functions = builder.AddAzureFunctionsProject<Projects.CoffeeClub_Functions>("functions")
+                       .WithHostStorage(storage)
+                       .WithReference(coffees)
+                       .WaitFor(coffees);
+
 
 var coreApi = builder.AddProject<Projects.CoffeeClub_Core>("coreapi")
     .WithHttpHealthCheck("/health")
