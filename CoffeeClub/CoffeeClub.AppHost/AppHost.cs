@@ -11,7 +11,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 var isDev = !builder.ExecutionContext.IsPublishMode;
 var insights = builder.AddAzureApplicationInsights("MyApplicationInsights");
 
-var serviceBus = builder.AddAzureServiceBus("messaging");
+var serviceBus = builder.AddAzureServiceBus("servicebus");
 if (isDev)
 {
     serviceBus = serviceBus.RunAsEmulator(
@@ -55,15 +55,16 @@ var storage = builder.AddAzureStorage("storage")
 var functions = builder.AddAzureFunctionsProject<Projects.CoffeeClub_Functions>("functions")
                        .WithHostStorage(storage)
                        .WithReference(coffees)
-                       .WaitFor(coffees);
+                       .WaitFor(coffees)
+                       .WaitFor(cosmos)
+                       .WithReference(serviceBus)
+                       .WaitFor(serviceBus);
 
 
 var coreApi = builder.AddProject<Projects.CoffeeClub_Core>("coreapi")
     .WithHttpHealthCheck("/health")
     .WaitFor(coffees)
-    .WithReference(coffees)
-    .WaitFor(serviceBus)
-    .WithReference(serviceBus);
+    .WithReference(coffees);
 
 if (!isDev && insights != null)
 {

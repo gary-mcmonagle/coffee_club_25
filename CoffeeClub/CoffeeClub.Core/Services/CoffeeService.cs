@@ -1,19 +1,15 @@
 using CoffeeClub.Domain.Dtos;
 using CoffeeClub.Domain.Services;
 using CoffeeClub.Domain.Extensions;
-using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using CoffeeClub.Domain.Entities;
 
 namespace CoffeeClub.Core.Services;
 
-public class CoffeeService(Container coffeeContainer, ServiceBusClient serviceBusClient) : ICoffeeService
+public class CoffeeService(Container coffeeContainer) : ICoffeeService
 {
-
-    private const string QueueName = "coffee-queue";
     private readonly Container _coffeeContainer = coffeeContainer;
-    private readonly ServiceBusSender _serviceBusSender = serviceBusClient.CreateSender(QueueName);
 
     public async Task<List<CoffeeDto>> GetCoffeesAsync()
     {

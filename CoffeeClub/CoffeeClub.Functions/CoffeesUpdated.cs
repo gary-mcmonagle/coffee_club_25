@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Azure.Messaging.ServiceBus;
 using CoffeeClub.Config;
 using CoffeeClub.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
@@ -10,14 +11,17 @@ namespace CoffeeClub.Functions;
 public class CoffeesUpdated
 {
     private readonly ILogger<CoffeesUpdated> _logger;
+    private readonly ServiceBusClient _serviceBusClient;
 
-    public CoffeesUpdated(ILogger<CoffeesUpdated> logger)
+    public CoffeesUpdated(ILogger<CoffeesUpdated> logger, ServiceBusClient serviceBusClient)
     {
         _logger = logger;
+        _serviceBusClient = serviceBusClient;
     }
 
     [Function("CoffeesUpdated")]
-    public void Run([CosmosDBTrigger(
+
+    public async Task Run([CosmosDBTrigger(
         databaseName: CoffeeClubConfiguration.Cosmos.DatabaseName,
         containerName: CoffeeClubConfiguration.Cosmos.ContainerName,
         Connection = "coffees",
@@ -32,5 +36,24 @@ public class CoffeesUpdated
         {
             _logger.LogInformation($"Coffee Id: {coffee.Id}, Name: {coffee.Name}");
         }
+
+        var sender = _serviceBusClient.CreateSender("coffee-queue");
+        foreach (var coffee in input)
+        {
+            var message = new ServiceBusMessage(System.Text.Json.JsonSerializer.Serialize(coffee))
+            {
+                Subject = "CoffeeUpdated",
+                MessageId = coffee.Id.ToString(),
+                ApplicationProperties =
+                {
+                    { "CoffeeId", coffee.Id },
+                    { "CoffeeName", coffee.Name },
+                    { "UpdatedAt", DateTime.UtcNow }
+                }
+            };
+            await sender.SendMessageAsync(message);
+            _logger.LogInformation($"Sent message for Coffee Id: {coffee.Id}, Name: {coffee.Name}");
+        }
+        // return input.ToList();
     }
 }
